@@ -1,11 +1,6 @@
 'use strict';
 
 function apiCall(val) {
-  if (val <= 0 || val > 50) {
-    //throw error
-    return;
-  }
-
   fetch(`https://dog.ceo/api/breed/${val}/images/random`)
     .then(response => response.json())
     .then(displayResults)
@@ -13,21 +8,21 @@ function apiCall(val) {
 }
 
 function displayError(err) {
-  $('.results').html(`<div>${err}</div>`);
+  $('.results').html(`<div class="error-msg">${err.message}</div>`);
 }
 
 function displayResults(response) {
   console.log(response);
-  if (response.code === '404') {
-    displayError(response.message);
-  } else {
+  if (response.status === 'success') {
     let imgs = response.message;
     $('.results').html(`<img src="${imgs}" alt="dogpic">`);
+  } else {
+    displayError(response);
   }
 }
 
 function handleDogApp() {
-  $('form').submit(function (event) {
+  $('form').submit(function(event) {
     event.preventDefault();
     let val = $(event.currentTarget)
       .find('input')
